@@ -8,7 +8,7 @@ pyvenv virtualenv
 source ./virtualenv/bin/activate
 pip install -r requirements.txt
 
-rm -r ./dist
+rm -rf ./dist
 
 for tag in $(curl -sS https://registry.hub.docker.com/v2/repositories/library/ubuntu/tags/ | jq --raw-output '."results"[]["name"]'); do
   mkdir --parents ./dist/$tag
