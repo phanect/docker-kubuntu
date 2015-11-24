@@ -3,5 +3,11 @@ sudo: required
 services:
   - docker
 
+env:
+  - VERSION=12.04
+  - VERSION=14.04
+  - VERSION=15.10
+
 script:
-  - docker build --tag=phanect/kubuntu .
+  - ./build.sh
+  - docker build --tag=phanect/kubuntu ./dist/$VERSION/
