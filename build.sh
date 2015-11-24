@@ -16,7 +16,7 @@ mkdir --parents ./tmp
 curl --location --silent --show-error --output ./tmp/jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
 chmod +x ./tmp/jq
 
-for tag in $(curl -sS https://registry.hub.docker.com/v2/repositories/library/ubuntu/tags/ | ./tmp/jq --raw-output '."results"[]["name"]'); do
+for tag in $(curl -sS https://registry.hub.docker.com/v1/repositories/ubuntu/tags | ./tmp/jq --raw-output '.[]["name"]'); do
   mkdir --parents ./dist/$tag
   echo '{ "version": "'$tag'" }' | jinja2 --format=json ./Dockerfile.j2 > dist/$tag/Dockerfile
 done
