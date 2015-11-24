@@ -6,7 +6,7 @@ set -e
 
 pyvenv virtualenv
 source ./virtualenv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt > /dev/null
 
 rm -rf ./dist
 
