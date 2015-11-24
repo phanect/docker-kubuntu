@@ -1,4 +1,5 @@
 FROM ubuntu:12.04
 
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install kubuntu-desktop -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y kubuntu-desktop \
+  apt-transport-https # TODO Confirm if installed in Kubuntu iso image
