@@ -17,6 +17,6 @@ curl --location --silent --show-error --output ./tmp/jq https://github.com/stedo
 chmod +x ./tmp/jq
 
 for tag in $(curl -sS https://registry.hub.docker.com/v1/repositories/ubuntu/tags | ./tmp/jq --raw-output '.[]["name"]'); do
-  mkdir --parents ./dist/$tag
-  echo '{ "version": "'$tag'" }' | jinja2 --format=json ./Dockerfile.j2 > dist/$tag/Dockerfile
+  mkdir --parents "./dist/$tag"
+  echo '{ "version": "'$tag'" }' | jinja2 --format=json ./Dockerfile.j2 > "dist/$tag/Dockerfile"
 done
