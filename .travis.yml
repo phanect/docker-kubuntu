@@ -16,5 +16,5 @@ before_install:
   - sudo apt-get update -qq && sudo apt-get install --yes jq
   - npm install --global mustache
 script:
-  - ./build.sh
   - docker build --tag=phanect/kubuntu ./dist/$VERSION/
+  - ./build.sh
