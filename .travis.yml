@@ -1,13 +1,20 @@
-language: python
+dist: trusty
+language: node_js
+node_js:
+  - "4"
 sudo: required
 services:
   - docker
 
 env:
-  - VERSION=12.04
+  - VERSION=16.04
   - VERSION=14.04
-  - VERSION=15.10
+  - VERSION=12.04
 
+before_install:
+  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release --short --codename)-backports main restricted universe multiverse" # for jq 1.4+
+  - sudo apt-get update -qq && sudo apt-get install --yes jq
+  - npm install --global mustache
 script:
-  - ./build.sh
   - docker build --tag=phanect/kubuntu ./dist/$VERSION/
+  - ./build.sh

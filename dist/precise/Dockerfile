@@ -1,5 +1,3 @@
 FROM ubuntu:precise
 
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y kubuntu-desktop \
-  apt-transport-https # TODO Confirm if installed in Kubuntu iso image
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --yes kubuntu-desktop
