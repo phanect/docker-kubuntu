@@ -5,6 +5,9 @@ jobs:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
+      - run: # Default ruby is in .rvm and it causes error when running system-installed mustache
+          name: Remove RVM
+          command: sudo rm -rf /opt/circleci/.rvm/
       - run:
           name: System Update
           command: |
