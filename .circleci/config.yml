@@ -23,35 +23,28 @@ jobs:
             DEBIAN_FRONTEND=noninteractive sudo apt-get dist-upgrade --yes
             DEBIAN_FRONTEND=noninteractive sudo apt-get install --yes jq ruby-mustache
       - checkout
+      - run: ./build.sh
 
   build-bionic:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
-      - run: |
-            docker build --tag=phanect/kubuntu ./dist/18.04/
-            ./build.sh
+      - run: docker build --tag=phanect/kubuntu ./dist/18.04/
   build-xenial:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
-      - run: |
-            docker build --tag=phanect/kubuntu ./dist/16.04/
-            ./build.sh
+      - run: docker build --tag=phanect/kubuntu ./dist/16.04/
   build-trusty:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
-      - run: |
-            docker build --tag=phanect/kubuntu ./dist/14.04/
-            ./build.sh
+      - run: docker build --tag=phanect/kubuntu ./dist/14.04/
   build-precise:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
-      - run: |
-            docker build --tag=phanect/kubuntu ./dist/12.04/
-            ./build.sh
+      - run: docker build --tag=phanect/kubuntu ./dist/12.04/
 
 workflows:
   version: 2
