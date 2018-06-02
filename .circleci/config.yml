@@ -8,7 +8,6 @@ jobs:
       - run:
           name: System Update
           command: |
-            sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release --short --codename)-backports main restricted universe multiverse" # for jq 1.4+
             sudo apt-get update -qq
             # Remove unnecessary packages for faster dist-upgrade
             sudo apt-get remove --yes \
