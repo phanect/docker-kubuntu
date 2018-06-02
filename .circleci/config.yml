@@ -10,8 +10,7 @@ jobs:
           command: |
             sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release --short --codename)-backports main restricted universe multiverse" # for jq 1.4+
             sudo apt-get update -qq
-            DEBIAN_FRONTEND=noninteractive sudo apt-get install --yes jq
-            npm install --global mustache
+            DEBIAN_FRONTEND=noninteractive sudo apt-get install --yes jq ruby-mustache
       - checkout
 
   build-bionic:
