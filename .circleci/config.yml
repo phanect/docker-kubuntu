@@ -1,0 +1,132 @@
+version: 2
+
+jobs:
+  setup:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: # Default ruby is in .rvm and it causes error when running system-installed mustache
+          name: Remove RVM
+          command: sudo rm -rf /opt/circleci/.rvm/
+      - run:
+          name: System Update
+          command: |
+            sudo apt-get update -qq
+            # Remove unnecessary packages for faster dist-upgrade
+            sudo apt-get remove --yes --auto-remove \
+              build-essential \
+              default-jre openjdk-7-jre-headless \
+              openjdk-8-jdk openjdk-8-jdk-headless openjdk-8-jre openjdk-8-jre-headless \
+              gcc gcc-4.8 gfortran-4.8 libgcc-4.8-dev libgfortran-4.8-dev \
+              google-chrome-stable \
+              google-cloud-sdk \
+              icu-devtools \
+              sbt \
+              dpkg-dev libc6-dev libffi-dev libgdk-pixbuf2.0-dev libicu-dev libssl-dev libtiff5-dev libxml2-dev linux-libc-dev \
+              libssl-doc
+            sudo apt-get autoremove --yes
+            DEBIAN_FRONTEND=noninteractive sudo apt-get dist-upgrade --yes
+            DEBIAN_FRONTEND=noninteractive sudo apt-get install --yes jq ruby-mustache
+      - checkout
+      - run: ./build.sh
+      - run: echo "$DOCKER_CLOUD_PASSWORD" | docker login --username="phanect" --password-stdin
+
+  build-bionic:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker build --tag=phanect/kubuntu:18.04 ./dist/18.04/
+      - run: docker tag phanect/kubuntu:18.04 phanect/kubuntu:bionic
+  build-xenial:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker build --tag=phanect/kubuntu:16.04 ./dist/16.04/
+      - run: docker tag phanect/kubuntu:16.04 phanect/kubuntu:xenial
+  build-trusty:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker build --tag=phanect/kubuntu:14.04 ./dist/14.04/
+      - run: docker tag phanect/kubuntu:14.04 phanect/kubuntu:trusty
+  build-precise:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker build --tag=phanect/kubuntu:12.04 ./dist/12.04/
+      - run: docker tag phanect/kubuntu:12.04 phanect/kubuntu:precise
+
+  deploy-bionic:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker push phanect/kubuntu:18.04
+      - run: docker push phanect/kubuntu:bionic
+  deploy-xenial:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker push phanect/kubuntu:16.04
+      - run: docker push phanect/kubuntu:xenial
+  deploy-trusty:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker push phanect/kubuntu:14.04
+      - run: docker push phanect/kubuntu:trusty
+  deploy-precise:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker push phanect/kubuntu:12.04
+      - run: docker push phanect/kubuntu:precise
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - setup
+
+      - build-bionic:
+          requires:
+            - setup
+      - deploy-bionic:
+          requires:
+            - build-bionic
+          filters:
+            branches:
+              only:
+                - master
+
+      - build-xenial:
+          requires:
+            - setup
+      - deploy-xenial:
+          requires:
+            - build-xenial
+          filters:
+            branches:
+              only:
+                - master
+
+      - build-trusty:
+          requires:
+            - setup
+      - deploy-trusty:
+          requires:
+            - build-trusty
+          filters:
+            branches:
+              only:
+                - master
+
+      - build-precise:
+          requires:
+            - setup
+      - deploy-precise:
+          requires:
+            - build-precise
+          filters:
+            branches:
+              only:
+                - master
