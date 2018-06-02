@@ -3,7 +3,7 @@
 set -eu
 
 type jq > /dev/null
-type mustache > /dev/null
+type mustache > /dev/null # apt install ruby-mustache
 
 rm --recursive --force ./dist
 
