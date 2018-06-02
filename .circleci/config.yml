@@ -1,21 +1,63 @@
-dist: trusty
-language: node_js
-node_js:
-  - "10"
-sudo: required
-services:
-  - docker
+version: 2
 
-env:
-  - VERSION=18.04
-  - VERSION=16.04
-  - VERSION=14.04
-  - VERSION=12.04
+jobs:
+  setup:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run:
+          name: System Update
+          command: |
+            sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release --short --codename)-backports main restricted universe multiverse" # for jq 1.4+
+            sudo apt-get update -qq
+            DEBIAN_FRONTEND=noninteractive sudo apt-get install --yes jq
+            npm install --global mustache
+      - checkout
 
-before_install:
-  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release --short --codename)-backports main restricted universe multiverse" # for jq 1.4+
-  - sudo apt-get update -qq && sudo apt-get install --yes jq
-  - npm install --global mustache
-script:
-  - docker build --tag=phanect/kubuntu ./dist/$VERSION/
-  - ./build.sh
+  build-bionic:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: |
+            docker build --tag=phanect/kubuntu ./dist/18.04/
+            ./build.sh
+  build-xenial:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: |
+            docker build --tag=phanect/kubuntu ./dist/16.04/
+            ./build.sh
+  build-trusty:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: |
+            docker build --tag=phanect/kubuntu ./dist/14.04/
+            ./build.sh
+  build-precise:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: |
+            docker build --tag=phanect/kubuntu ./dist/12.04/
+            ./build.sh
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - setup
+
+      - build-bionic:
+          requires:
+            - setup
+      - build-xenial:
+          requires:
+            - setup
+      - build-trusty:
+          requires:
+            - setup
+      - build-precise:
+          requires:
+            - setup
