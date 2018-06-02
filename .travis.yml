@@ -1,12 +1,13 @@
 dist: trusty
 language: node_js
 node_js:
-  - "4"
+  - "10"
 sudo: required
 services:
   - docker
 
 env:
+  - VERSION=18.04
   - VERSION=16.04
   - VERSION=14.04
   - VERSION=12.04
