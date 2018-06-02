@@ -13,14 +13,17 @@ jobs:
           command: |
             sudo apt-get update -qq
             # Remove unnecessary packages for faster dist-upgrade
-            sudo apt-get remove --yes \
+            sudo apt-get remove --yes --auto-remove \
               build-essential \
               default-jre openjdk-7-jre-headless \
               openjdk-8-jdk openjdk-8-jdk-headless openjdk-8-jre openjdk-8-jre-headless \
-              gcc gcc-4.8 gfortran-4.8 \
+              gcc gcc-4.8 gfortran-4.8 libgcc-4.8-dev libgfortran-4.8-dev \
               google-chrome-stable \
               google-cloud-sdk \
-              sbt
+              icu-devtools \
+              sbt \
+              dpkg-dev libc6-dev libffi-dev libgdk-pixbuf2.0-dev libicu-dev libssl-dev libtiff5-dev libxml2-dev linux-libc-dev \
+              libssl-doc
             sudo apt-get autoremove --yes
             DEBIAN_FRONTEND=noninteractive sudo apt-get dist-upgrade --yes
             DEBIAN_FRONTEND=noninteractive sudo apt-get install --yes jq ruby-mustache
