@@ -24,27 +24,57 @@ jobs:
             DEBIAN_FRONTEND=noninteractive sudo apt-get install --yes jq ruby-mustache
       - checkout
       - run: ./build.sh
+      - run: echo "$DOCKER_CLOUD_PASSWORD" | docker login --username="phanect" --password-stdin
 
   build-bionic:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
-      - run: docker build --tag=phanect/kubuntu ./dist/18.04/
+      - run: docker build --tag=phanect/kubuntu:18.04 ./dist/18.04/
+      - run: docker tag phanect/kubuntu:18.04 phanect/kubuntu:bionic
   build-xenial:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
-      - run: docker build --tag=phanect/kubuntu ./dist/16.04/
+      - run: docker build --tag=phanect/kubuntu:16.04 ./dist/16.04/
+      - run: docker tag phanect/kubuntu:16.04 phanect/kubuntu:xenial
   build-trusty:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
-      - run: docker build --tag=phanect/kubuntu ./dist/14.04/
+      - run: docker build --tag=phanect/kubuntu:14.04 ./dist/14.04/
+      - run: docker tag phanect/kubuntu:14.04 phanect/kubuntu:trusty
   build-precise:
     working_directory: ~/docker-kubuntu
     machine: true
     steps:
-      - run: docker build --tag=phanect/kubuntu ./dist/12.04/
+      - run: docker build --tag=phanect/kubuntu:12.04 ./dist/12.04/
+      - run: docker tag phanect/kubuntu:12.04 phanect/kubuntu:precise
+
+  deploy-bionic:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker push phanect/kubuntu:18.04
+      - run: docker push phanect/kubuntu:bionic
+  deploy-xenial:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker push phanect/kubuntu:16.04
+      - run: docker push phanect/kubuntu:xenial
+  deploy-trusty:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker push phanect/kubuntu:14.04
+      - run: docker push phanect/kubuntu:trusty
+  deploy-precise:
+    working_directory: ~/docker-kubuntu
+    machine: true
+    steps:
+      - run: docker push phanect/kubuntu:12.04
+      - run: docker push phanect/kubuntu:precise
 
 workflows:
   version: 2
@@ -55,12 +85,43 @@ workflows:
       - build-bionic:
           requires:
             - setup
+      - deploy-bionic:
+          requires:
+            - build-bionic
+          filters:
+            branches:
+              only:
+                - master
+
       - build-xenial:
           requires:
             - setup
+      - deploy-xenial:
+          requires:
+            - build-xenial
+          filters:
+            branches:
+              only:
+                - master
+
       - build-trusty:
           requires:
             - setup
+      - deploy-trusty:
+          requires:
+            - build-trusty
+          filters:
+            branches:
+              only:
+                - master
+
       - build-precise:
           requires:
             - setup
+      - deploy-precise:
+          requires:
+            - build-precise
+          filters:
+            branches:
+              only:
+                - master
